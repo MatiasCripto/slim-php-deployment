@@ -11,12 +11,15 @@ class EmpleadoController extends Empleado
     {
         $parametros = $request->getParsedBody();
         $nombre = $parametros['nombre'];
+        $clave = $parametros['clave'];
+        $claveHasheada = md5($clave);
         $rol = $parametros['rol'];
     
         if (in_array($rol, $this::$roles))
         {
             $empleado = new Empleado();
             $empleado->nombre = $nombre;
+            $empleado->clave = $claveHasheada;
             $empleado->rol = $rol;
             $empleado->AltaEmpleado();
             $payload = json_encode(array("Mensaje" => "Usuario creado con exito"));
