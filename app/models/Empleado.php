@@ -3,7 +3,8 @@
 class Empleado
 {
     public $id;
-    public $nombre;    
+    public $nombre;  
+    public $clave;  
     public $rol;
     public $fechaAlta;
     public $fechaBaja;
@@ -11,10 +12,11 @@ class Empleado
     public function AltaEmpleado()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO empleado (nombre,rol, fechaAlta) VALUES (:nombre, :rol, :fechaAlta)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO empleado (nombre,rol, fechaAlta) VALUES (:nombre, clave:, :rol, :fechaAlta)");
         $fechaAlta = new DateTime(date("d-m-Y"));
         
-        $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);        
+        $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);      
+        $consulta->bindValue(':clave', $this->clave, PDO::PARAM_STR);  
         $consulta->bindValue(':rol', $this->rol, PDO::PARAM_STR);
         $consulta->bindValue(':fechaAlta', date_format($fechaAlta, "Y-m-d"));
 

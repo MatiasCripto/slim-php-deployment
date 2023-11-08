@@ -10,7 +10,6 @@ use Slim\Routing\RouteCollectorProxy;
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/db/AccesoDatos.php';
 require_once __DIR__ . '/../app/controllers/EmpleadoController.php';
-//require_once __DIR__ . './models/Empleado.php';
 require_once __DIR__ . '/../app/controllers/ProductoController.php';
 require_once __DIR__ . '/../app/controllers/MesaController.php';
 require_once __DIR__ . '/../app/controllers/PedidoController.php';
