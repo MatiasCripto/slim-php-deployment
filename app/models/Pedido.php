@@ -12,11 +12,12 @@ class Pedido
     public $fotoMesa;
     public $tiempoPreparacion;
     public $horaCreacion;
+    public $horaFinalizacion;
 
     public function AltaPedido()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedido (idEmpleado, idProducto, cantidadProductos, idMesa, estado, codigoPedido, fotoMesa, tiempoPreparacion, horaCreacion) VALUES (:idEmpleado, :idProducto, :cantidadProductos, :idMesa, :estado, :codigoPedido, :fotoMesa, :tiempoPreparacion, :horaCreacion)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO pedidos (idEmpleado, idProducto, cantidadProductos, idMesa, estado, codigoPedido, fotoMesa, tiempoPreparacion, horaCreacion) VALUES (:idEmpleado, :idProducto, :cantidadProductos, :idMesa, :estado, :codigoPedido, :fotoMesa, :tiempoPreparacion, :horaCreacion)");
         $consulta->bindValue(':idEmpleado', $this->idEmpleado, PDO::PARAM_INT);
         $consulta->bindValue(':idProducto', $this->idProducto, PDO::PARAM_INT);
         $consulta->bindValue(':cantidadProductos', $this->cantidadProductos, PDO::PARAM_INT);
@@ -32,7 +33,7 @@ class Pedido
     public static function GetPedidos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM pedido");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM pedidos");
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
     }

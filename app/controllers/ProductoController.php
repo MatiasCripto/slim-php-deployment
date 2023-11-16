@@ -65,31 +65,31 @@ class ProductoController extends Producto
         }    
     }
 
-   public function ImportarProductos($request, $response, $args)
-{
-    try
+    public function ImportarProductos($request, $response, $args)
     {
-        if(isset($_FILES["archivo"]) && $_FILES["archivo"]["error"] == UPLOAD_ERR_OK)
+        try
         {
-            $archivo = $_FILES["archivo"]["tmp_name"];
-            Producto::LoadCSV($archivo);
-            $payload = json_encode(array("Mensaje" => "Productos cargados!"));
-        }
+            if(isset($_FILES["archivo"]) && $_FILES["archivo"]["error"] == UPLOAD_ERR_OK)
+            {
+                $archivo = $_FILES["archivo"]["tmp_name"];
+                Producto::LoadCSV($archivo);
+                $payload = json_encode(array("Mensaje" => "Productos cargados!"));
+            }
         else
         {
             throw new Exception("No se pudo cargar el archivo.");
         }
+        }
+        catch(Throwable $mensaje)
+        {
+            $payload = json_encode(array("Error" => $mensaje->getMessage()));
+        }
+        finally
+        {
+            $response->getBody()->write($payload);
+            return $response->withHeader('Content-Type', 'application/json');
+        }    
     }
-    catch(Throwable $mensaje)
-    {
-        $payload = json_encode(array("Error" => $mensaje->getMessage()));
-    }
-    finally
-    {
-        $response->getBody()->write($payload);
-        return $response->withHeader('Content-Type', 'application/json');
-    }    
-}
 
 }
 
