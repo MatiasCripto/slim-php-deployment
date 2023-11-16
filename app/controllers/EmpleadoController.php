@@ -6,7 +6,7 @@ require_once __DIR__ . '/../models/Empleado.php';
 
 class EmpleadoController extends Empleado
 {
-    public static $roles = array("Bartender", "Cervecero", "Cocinero", "Pastelero", "Mozo", "Socio");
+    public static $roles = array("Bartender", "Cervecero", "Cocinero", "Mozo", "Socio");
     public function CargarEmpleado($request, $response, $args)
     {
         $parametros = $request->getParsedBody();
@@ -26,7 +26,7 @@ class EmpleadoController extends Empleado
         }
         else
         {
-            $payload = json_encode(array("Mensaje" => "Rol de empleado no valido. (Bartender / Cervecero / Cocinero / Pastelero/ Mozo / Socio)"));
+            $payload = json_encode(array("Mensaje" => "Rol de empleado no valido. (Bartender / Cervecero / Cocinero / Mozo / Socio)"));
         }
     
         $response->getBody()->write($payload);
@@ -38,6 +38,26 @@ class EmpleadoController extends Empleado
     {
         $lista = Empleado::GetEmpleados();
         $payload = json_encode(array("Empleados" => $lista));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function ModificarUno($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $id = $parametros['id'];
+        Empleado::UpdateEmpleado($id);
+        $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function BorrarUno($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $usuarioId = $parametros['id'];
+        Empleado::DeleteEmpleado($usuarioId);
+        $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
     }

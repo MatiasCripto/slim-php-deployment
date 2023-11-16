@@ -8,7 +8,7 @@ class LoginController extends AuthJWT
     {
         $datosPost = $request->getParsedBody();
         $datosBD = Empleado::GetEmpleadoPorNombre($datosPost["nombre"]);
-        $clave = $datosPost["clave"];
+        $clave = $datosPost["clave"];       
 
         if($datosBD != null && md5($clave) == $datosBD->clave)
         {
@@ -19,7 +19,11 @@ class LoginController extends AuthJWT
             else
             {
                 $datos = array('id'=> $datosBD->id, 'nombre' => $datosBD->nombre, "rol"=> $datosBD->rol);
-                $token = AuthJWT::NuevoToken($datos);
+                $token = AuthJWT::NuevoToken($datos);   
+                echo $token;
+
+                // Validar el token recién generado
+                AuthJWT::ValidarToken($token);             
                 $payload = json_encode(array('Se ha logeado como:'=> $datosBD->rol, 'Token' => $token));
                 $response->getBody()->write($payload);
             }

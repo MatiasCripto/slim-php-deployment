@@ -5,7 +5,7 @@ use Firebase\JWT\JWT;
 class AuthJWT
 {
     private static $miClaveSecreta = "Progra3"; //Clave Secreta
-    private static $algoritmoDeCodificacion = ['HS256']; // Algoritmo de Codificacion
+    private static $algoritmoDeCodificacion = ['HS256']; 
     private static $aud = null;
 
     public static function NuevoToken($data)
@@ -26,6 +26,7 @@ class AuthJWT
         {
             throw new Exception("El token esta vacio!");
         }
+        echo $token;
 
         try
         {
