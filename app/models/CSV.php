@@ -6,39 +6,41 @@ class CSV
     {
         $listaProductos = Producto::GetProductos();
         $file = fopen($path, "w");
-        foreach($listaProductos as $producto)
+        if($file)
         {
-            $separado= implode(",", (array)$producto);  
-            if($file)
+            foreach($listaProductos as $producto)
             {
-                fwrite($file, $separado.",\r\n"); 
-            }                           
+                fputcsv($file, (array)$producto);
+            }
+            fclose($file);
+            return $path;
         }
-        fclose($file);  
-        return $path;     
+        else
+        {
+            throw new Exception("No se pudo abrir el archivo para escritura.");
+        }
     }
 
     public static function ImportarCSV($path)
     {
-        $aux = fopen($path, "r");
         $array = [];
-        if(isset($aux))
+        $aux = fopen($path, "r");
+        if($aux)
         {
             try
             {
                 while(!feof($aux))
                 {
-                    $datos = fgets($aux);                        
+                    $datos = fgets($aux);
                     if(!empty($datos))
-                    {          
-                        array_push($array, $datos);                                                
+                    {
+                        array_push($array, $datos);
                     }
                 }
             }
             catch(Exception $e)
             {
-                echo "Error:";
-                echo $e;
+                throw new Exception("Error al leer el archivo: " . $e->getMessage());
             }
             finally
             {
@@ -46,6 +48,11 @@ class CSV
                 return $array;
             }
         }
+        else
+        {
+            throw new Exception("No se pudo abrir el archivo para lectura.");
+        }
     }
 }
+
 ?>

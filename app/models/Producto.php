@@ -1,5 +1,6 @@
 <?php
 
+
 class Producto
 {
     public $id;
@@ -10,7 +11,7 @@ class Producto
     public function AltaProducto()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO producto (descripcion, precio, sector) VALUES (:descripcion, :precio, :sector)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO productos (descripcion, precio, sector) VALUES (:descripcion, :precio, :sector)");
         $consulta->bindValue(':descripcion', $this->descripcion, PDO::PARAM_STR);
         $consulta->bindValue(':precio', $this->precio, PDO::PARAM_STR);
         $consulta->bindValue(':sector', $this->sector, PDO::PARAM_STR);
@@ -20,7 +21,7 @@ class Producto
     public static function GetProductos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM producto");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM productos");
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
     }
@@ -28,10 +29,26 @@ class Producto
     public static function GetProductoPorId($id)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM producto WHERE id = :id");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM productos WHERE id = :id");
         $consulta->bindValue(':id', $id, PDO::PARAM_STR);
         $consulta->execute();
         return $consulta->fetchObject("Producto");
     }
+
+    public static function LoadCSV($path)
+    {
+        $array = CSV::ImportarCSV($path);
+        for($i = 0; $i < sizeof($array); $i++)
+        {
+            $datos = explode(",", $array[$i]); 
+            $producto = new Producto();
+            $producto->id = $datos[0];
+            $producto->descripcion = $datos[1];
+            $producto->precio = $datos[2];
+            $producto->sector = $datos[3];
+            $producto->AltaProducto();
+        }
+    }
+
 }
 ?>

@@ -26,7 +26,7 @@ class AuthJWT
         {
             throw new Exception("El token esta vacio!");
         }
-        echo $token;
+        //echo $token;
 
         try
         {

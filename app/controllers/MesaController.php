@@ -36,7 +36,7 @@ class MesaController extends Mesa
         $mesas[] = array(
             "id" => $mesa->id,
             "estado" => $mesa->estado,
-            "codigoUnico" => $mesa->codigoUnico // Incluir el código único
+            "codigoUnico" => $mesa->codigoUnico 
         );
     }
 
@@ -45,7 +45,40 @@ class MesaController extends Mesa
     return $response->withHeader('Content-Type', 'application/json');
     }
 
-    
+    public function CambiarEstadoMesa($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $mesa = Mesa::GetMesaPorId($parametros['idMesa']);
+        $listaPedidos = Pedido::GetPedidosListos();
+        foreach ($listaPedidos as $pedido)
+        {
+            if($pedido->idMesa == $mesa->id && $pedido->estado == "Listo para servir!")
+            {
+                Mesa::CambiarEstado($mesa->id, "con cliente comiendo");
+                $response->getBody()->write("Se ha modificado el estado de la mesa con exito!\n");
+                break;
+            }
+        }
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function CerrarMesa($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $mesa = Mesa::GetMesaPorId($parametros['idMesa']);
+        Mesa::CambiarEstado($mesa->id, "cerrada");
+        $response->getBody()->write("Mesa cerrada con exito!");
+        return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function AbrirMesa($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        $mesa = Mesa::GetMesaPorId($parametros['idMesa']);
+        Mesa::CambiarEstado($mesa->id, "con cliente esperando pedido");
+        $response->getBody()->write("Mesa abierta con exito!");
+        return $response->withHeader('Content-Type', 'application/json');
+    }    
 }
 
 ?>

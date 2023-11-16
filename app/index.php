@@ -30,27 +30,51 @@ $app->addErrorMiddleware(true, true, true);
 $app->addBodyParsingMiddleware();
 
 $app->group('/usuarios', function (RouteCollectorProxy $group) {
-    $group->post('/alta', \EmpleadoController::class . ':CargarEmpleado');
-    $group->get('/listar', \EmpleadoController::class . ':MostrarEmpleados');
+    $group->post('/altaEmpleado', \EmpleadoController::class . ':CargarEmpleado')->add(new MWSocio());
+    $group->get('/listarEmpleados', \EmpleadoController::class . ':MostrarEmpleados');
     $group->delete('/', \EmpleadoController::class . ':BorrarUno')->add(new MWSocio());
     $group->put('/', \EmpleadoController::class . ':ModificarUno')->add(new MWSocio());
 })->add(new MWToken());
 
-$app->group('/mesas', function (RouteCollectorProxy $group) {
-    $group->post('/alta', \MesaController::class . ':CargarMesa');
-    $group->get('/listar', \MesaController::class . ':MostrarMesas');
-});
-
 $app->group('/productos', function (RouteCollectorProxy $group) {
-    $group->post('/alta', \ProductoController::class . ':CargarProducto');
-    $group->get('/listar', \ProductoController::class . ':MostrarProductos');
-});
+  $group->post('/altaProducto', \ProductoController::class . ':CargarProducto');
+  $group->get('/listarProductos', \ProductoController::class . ':MostrarProductos');
+  $group->get('/exportarCSV', \ProductoController::class . ':ExportarProductos')->add(new MWSocio());
+  $group->post('/importarCSV', \ProductoController::class . ':ImportarProductos')->add(new MWSocio());
+})->add(new MWToken());
 
-$app->group('/pedidos', function (RouteCollectorProxy $group) {
-    $group->post('/alta', \PedidoController::class . ':CargarPedido');
-    $group->get('/listar', \PedidoController::class . ':MostrarPedidos');
-});
+$app->group('/mesas', function (RouteCollectorProxy $group) {
+  $group->post('/altaMesa', \MesaController::class . ':CargarMesa');
+  $group->get('/listarMesas', \MesaController::class . ':MostrarMesas')->add(new MWSocio());
+  $group->put('/cambiarEstado', \MesaController::class . ':CambiarEstadoMesa')->add(new MWMozo());
+  $group->delete('/cerrarMesa', \MesaController::class . ':CerrarMesa')->add(new MWSocio());
+  $group->put('/abrirMesa', \MesaController::class . ':AbrirMesa')->add(new MWMozo());
+})->add(new MWToken());
 
+$app->group('/pedidos', function (RouteCollectorProxy $group) { 
+  $group->post('/altaPedido', \PedidoController::class . ':CargarPedido')->add(new MWMozo());
+  $group->get('/listarPedidos', \PedidoController::class . ':MostrarPedidos')->add(new MWSocio());
+  $group->get('/MostrarPedidosEmpleado', \PedidoController::class . ':MostrarPedidosEmpleado');
+  $group->get('/MostrarPedidosPreparados', \PedidoController::class . ':MostrarPedidosPreparados');
+  $group->put('/prepararPedido', \PedidoController::class . ':PrepararPedido');
+  $group->put('/PedidoListo', \PedidoController::class . ':CambiarEstadoListo');
+  $group->get('/ConsultarPedidosListos', \PedidoController::class . ':ConsultarPedidosListos')->add(new MWMozo());
+  $group->get('/MesaPopular',  \PedidoController::class . ':ConsultarMesaPopular')->add(new MWSocio());
+})->add(new MWToken());
+
+$app->get('/MejoresEncuestas', \EncuestaController::class . ':MostrarMejores')->add(new MWSocio());
+$app->post('/Encuesta', \EncuestaController::class . ':CargarEncuesta');
+$app->post('/Facturar', \FacturaController::class . ':CargarFactura')->add(new MWMozo());
+$app->get('/MostrarFacturas', \FacturaController::class . ':MostrarFacturas');
+$app->post('/demoraPedido', \PedidoController::class . ':ConsultarDemoraPedido');
 $app->post('/login', \LoginController::class . ':GenerarToken');
+$app->get('/login', \LoginController::class . ':Deslogear');
+
+$app->get('[/]', function (Request $request, Response $response) {    
+    $response->getBody()->write("TP Programacion III");
+    return $response;
+});
 
 $app->run();
+
+?>

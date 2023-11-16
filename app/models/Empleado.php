@@ -12,7 +12,7 @@ class Empleado
     public function AltaEmpleado()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO empleado (nombre, clave, rol, fechaAlta) VALUES (:nombre, :clave, :rol, :fechaAlta)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO empleados (nombre, clave, rol, fechaAlta) VALUES (:nombre, :clave, :rol, :fechaAlta)");
         $fechaAlta = new DateTime(date("d-m-Y"));
         
         $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);      
@@ -26,7 +26,7 @@ class Empleado
     public static function GetEmpleados()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleado");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleados");
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Empleado');
     }
@@ -34,7 +34,7 @@ class Empleado
     public static function GetEmpleadoPorNombre($nombre)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleado WHERE nombre = :nombre");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleados WHERE nombre = :nombre");
         $consulta->bindValue(':nombre', $nombre, PDO::PARAM_STR);
         $consulta->execute();
         return $consulta->fetchObject("Empleado");
@@ -43,7 +43,7 @@ class Empleado
     public static function DeleteEmpleado($id)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE empleado SET fechaBaja = :fechaBaja WHERE id = :id");
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE empleados SET fechaBaja = :fechaBaja WHERE id = :id");
         $fecha = new DateTime(date("d-m-Y"));
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->bindValue(':fechaBaja', date_format($fecha, 'Y-m-d'));
@@ -53,7 +53,7 @@ class Empleado
     public static function GetEmpleadoPorId($id)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleado WHERE id = :id");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM empleados WHERE id = :id");
         $consulta->bindValue(':id', $id, PDO::PARAM_STR);
         $consulta->execute();
         return $consulta->fetchObject("Empleado");
@@ -62,7 +62,7 @@ class Empleado
     public static function UpdateEmpleado($id)
     {
         $objAccesoDato = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE empleado SET fechaBaja = :fechaBaja WHERE id = :id");
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE empleados SET fechaBaja = :fechaBaja WHERE id = :id");
         $consulta->bindValue(':id', $id, PDO::PARAM_INT);
         $consulta->bindValue(':fechaBaja', 0000-00-00);
         $consulta->execute();
